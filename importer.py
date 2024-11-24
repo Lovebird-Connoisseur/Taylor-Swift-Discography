@@ -1,6 +1,7 @@
 import openpyxl
 import sys
 import sqlite3
+from datetime import datetime
 
 def generateTables(cursor, command):
     cursor.executescript(command)
@@ -31,9 +32,6 @@ def parseCategory(cursor, category):
     if not categoryExists(cursor, category):
         cursor.execute("INSERT INTO Category VALUES (?)", [category])
 
-
-# def parseSong(cursor, title, url, releaseDate, lyrics, pageViews):
-
 def personExists(cursor, person):
     res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Person WHERE title = ?)", [person]).fetchone()[0]
     if res:
@@ -44,15 +42,39 @@ def parsePerson(cursor, person):
     if not personExists(cursor, person):
         cursor.execute("INSERT INTO Person VALUES (?)", [person])
 
+def tagExists(cursor, tag):
+    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Tag WHERE title = ?)", [tag]).fetchone()[0]
+    if res:
+        return True
+    return False
+
+def parseTag(cursor, tag):
+    if not tagExists(cursor, tag):
+        cursor.execute("INSERT INTO Tag VALUES (?)", [tag])
+
 def parseJob(cursor, title):
     cursor.execute("INSERT INTO Job VALUES (?)", [title])
 
-# def parseCategory(cursor, title):
-# def parseTag(cursor, name):
-# def parseIsCategorizedAs(cursor, title, url, category):
-# def parseIsFeaturedIn(cursor, songTitle, songUrl, albumTitle, albumUrl, track):
-# def parseIsTaggedAs(cursor, title, url, tag):
-# def parseWorked(cursor, songTitle, songUrl, person, job):
+def songExists(cursor, title, url):
+    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Song WHERE title = ? AND url = ?)", (title, url)).fetchone()[0]
+    if res:
+        return True
+    return False
+
+def parseSong(cursor, title, url, releaseDate, lyrics, pageViews):
+    cursor.execute("INSERT INTO Song VALUES (?, ?, ?, ?, ?)", (title, url, releaseDate, lyrics, pageViews))
+
+def parseIsCategorizedAs(cursor, title, url, category):
+    cursor.execute("INSERT INTO IsCategorizedAs VALUES (?, ?, ?)", (title, url, category))
+
+def parseIsFeaturedIn(cursor, songTitle, songUrl, albumTitle, albumUrl, track):
+    cursor.execute("INSERT INTO IsFeaturedIn VALUES (?, ?, ?, ?, ?)", (songTitle, songUrl, albumTitle, albumUrl, track))
+
+def parseIsTaggedAs(cursor, title, url, tag):
+    cursor.execute("INSERT INTO IsTaggedAs VALUES (?, ?, ?)", (title, url, tag))
+
+def parseWorked(cursor, title, url, person, job):
+    cursor.execute("INSERT INTO Worked VALUES (?, ?, ?, ?)", (title, url, person, job))
 
 def main():
     wb = openpyxl.load_workbook(sys.argv[1])
@@ -83,41 +105,45 @@ def main():
         song_producers = row[11].value
         song_tags = row[12].value
 
-        # parseSong(cur, song_title, song_url, song_release_date, song_lyrics, song_page_views)
         parseCategory(cur, category)
+
+        for tag in song_tags[2:-2].split("', '"):
+            parseTag(cur, tag)
+
+        if songExists(cur, song_title, song_url):
+            print(song_title)
+
+        if not songExists(cur, song_title, song_url):
+            parseSong(cur, song_title, song_url, song_release_date.isoformat(), song_lyrics, song_page_views)
+            parseIsCategorizedAs(cur, song_title, song_url, category)
+            for tag in song_tags[2:-2].split("', '"):
+                parseIsTaggedAs(cur, song_title, song_url, tag)
+
 
         if hasAlbum(album_track_number):
             parseAlbum(cur, album_title, album_url)
-            #parseIsFeaturedIn(cur, song_title, song_url, album_title, album_url, album_track_number)
-
-        # for tag in song_tags:
-        #     parseTag(cur, tag)
+            parseIsFeaturedIn(cur, song_title, song_url, album_title, album_url, album_track_number)
 
         for person in song_artists[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-        #     parseWorked(cur, song_title, song_url,  person, "Artist")
+            parseWorked(cur, song_title, song_url,  person, "Artist")
 
         for person in song_writers[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-        #     parseWorked(cur, song_title, song_url,  person, "Writer")
+            parseWorked(cur, song_title, song_url,  person, "Writer")
 
         for person in song_producers[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-        #     parseWorked(cur, song_title, song_url,  person, "Producer")
+            parseWorked(cur, song_title, song_url,  person, "Producer")
 
-        # for tag in song_tags:
-        #     parseTag(cur, tag)
         dbCon.commit()
     cur.close()
 
 if __name__ == "__main__":
     main()
-
-
-# TODO: verificar se o pessoal/album/som/categorie/tag já se encontra na BD

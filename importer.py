@@ -33,14 +33,26 @@ def parseCategory(cursor, category):
 
 
 # def parseSong(cursor, title, url, releaseDate, lyrics, pageViews):
-# def parsePerson(cursor, name):
-# def parseJob(cursor, title):
+
+def personExists(cursor, person):
+    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Person WHERE title = ?)", [person]).fetchone()[0]
+    if res:
+        return True
+    return False
+
+def parsePerson(cursor, person):
+    if not personExists(cursor, person):
+        cursor.execute("INSERT INTO Person VALUES (?)", [person])
+
+def parseJob(cursor, title):
+    cursor.execute("INSERT INTO Job VALUES (?)", [title])
+
 # def parseCategory(cursor, title):
 # def parseTag(cursor, name):
 # def parseIsCategorizedAs(cursor, title, url, category):
 # def parseIsFeaturedIn(cursor, songTitle, songUrl, albumTitle, albumUrl, track):
 # def parseIsTaggedAs(cursor, title, url, tag):
-# def parseWorked(cursor, title, url, person, job):
+# def parseWorked(cursor, songTitle, songUrl, person, job):
 
 def main():
     wb = openpyxl.load_workbook(sys.argv[1])
@@ -51,6 +63,11 @@ def main():
         command = file.read()
 
     generateTables(cur, command)
+
+    parseJob(cur, "Artist")
+    parseJob(cur, "Writer")
+    parseJob(cur, "Producer")
+
     for row in tuple(sheet[2:sheet.max_row]):
         album_title = row[0].value
         album_url = row[1].value
@@ -76,18 +93,23 @@ def main():
         # for tag in song_tags:
         #     parseTag(cur, tag)
 
-        # for person in song_artists:
-        #     parsePerson(cur, name)
+        for person in song_artists[2:-2].split("', '"):
+            if person == "":
+                continue
+            parsePerson(cur, person)
+        #     parseWorked(cur, song_title, song_url,  person, "Artist")
 
-        # for person in song_writers:
-        #     parsePerson(cur, name)
+        for person in song_writers[2:-2].split("', '"):
+            if person == "":
+                continue
+            parsePerson(cur, person)
+        #     parseWorked(cur, song_title, song_url,  person, "Writer")
 
-        # for person in song_producers:
-        #     parsePerson(cur, name)
-
-        # parseJob(cur, "Artist")
-        # parseJob(cur, "Writer")
-        # parseJob(cur, "Producer")
+        for person in song_producers[2:-2].split("', '"):
+            if person == "":
+                continue
+            parsePerson(cur, person)
+        #     parseWorked(cur, song_title, song_url,  person, "Producer")
 
         # for tag in song_tags:
         #     parseTag(cur, tag)

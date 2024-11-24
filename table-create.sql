@@ -44,12 +44,14 @@ CREATE TABLE IsFeaturedIn(
 songTitle TEXT,
 songUrl TEXT,
 albumTitle TEXT,
+albumUrl TEXT,
 track INTEGER,
 
 FOREIGN KEY(songTitle) REFERENCES Song(title),
 FOREIGN KEY(songUrl) REFERENCES Song(url),
 FOREIGN KEY(albumTitle) REFERENCES Album(title),
-PRIMARY KEY (songTitle, songUrl, albumTitle)
+FOREIGN KEY(albumUrl) REFERENCES Album(url),
+PRIMARY KEY (songTitle, songUrl, albumTitle, albumUrl)
 );
 
 CREATE TABLE IsCategorizedAs(

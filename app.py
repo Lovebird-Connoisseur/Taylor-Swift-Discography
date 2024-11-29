@@ -6,7 +6,6 @@ APP = Flask(__name__)
 #TODO: implementar as questoes (+ habilidade para pesquisar, necessário???)
 #TODO: terminar relatorio
 # TODO: As questões tem de ser respondidas na hora? Ou podemos só colar na página o output que obtivemos sem fazer nenhuma query?
-# TODO: O dataset n ão contém todas as músicas dos albums, por isso a página de um abum pode só ter 1 música com track number 20 :<
 
 @APP.route('/tags/<tagName>/')
 def get_tag(tagName):

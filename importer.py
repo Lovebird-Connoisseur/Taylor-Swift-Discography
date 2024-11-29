@@ -12,14 +12,14 @@ def hasAlbum(track):
     else:
         return True
 
-def albumExists(cursor, title, url):
-    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Album WHERE title = ? AND url = ?)", (title, url)).fetchone()[0]
+def albumExists(cursor, url):
+    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Album WHERE url = ?)", [url]).fetchone()[0]
     if res:
         return True
     return False
 
 def parseAlbum(cursor, title, url):
-    if not albumExists(cursor, title, url):
+    if not albumExists(cursor, url):
         cursor.execute("INSERT INTO Album VALUES (?, ?)", (title, url))
 
 def categoryExists(cursor, category):
@@ -55,8 +55,8 @@ def parseTag(cursor, tag):
 def parseJob(cursor, title):
     cursor.execute("INSERT INTO Job VALUES (?)", [title])
 
-def songExists(cursor, title, url):
-    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Song WHERE title = ? AND url = ?)", (title, url)).fetchone()[0]
+def songExists(cursor, url):
+    res = cursor.execute("SELECT EXISTS(SELECT 1 FROM Song WHERE url = ?)", [url]).fetchone()[0]
     if res:
         return True
     return False
@@ -64,17 +64,17 @@ def songExists(cursor, title, url):
 def parseSong(cursor, title, url, releaseDate, lyrics, pageViews):
     cursor.execute("INSERT INTO Song VALUES (?, ?, ?, ?, ?)", (title, url, releaseDate, lyrics, pageViews))
 
-def parseIsCategorizedAs(cursor, title, url, category):
-    cursor.execute("INSERT INTO IsCategorizedAs VALUES (?, ?, ?)", (title, url, category))
+def parseIsCategorizedAs(cursor, url, category):
+    cursor.execute("INSERT INTO IsCategorizedAs VALUES (?, ?)", (url, category))
 
-def parseIsFeaturedIn(cursor, songTitle, songUrl, albumTitle, albumUrl, track):
-    cursor.execute("INSERT INTO IsFeaturedIn VALUES (?, ?, ?, ?, ?)", (songTitle, songUrl, albumTitle, albumUrl, track))
+def parseIsFeaturedIn(cursor, songUrl, albumUrl, track):
+    cursor.execute("INSERT INTO IsFeaturedIn VALUES (?, ?, ?)", (songUrl, albumUrl, track))
 
-def parseIsTaggedAs(cursor, title, url, tag):
-    cursor.execute("INSERT INTO IsTaggedAs VALUES (?, ?, ?)", (title, url, tag))
+def parseIsTaggedAs(cursor, url, tag):
+    cursor.execute("INSERT INTO IsTaggedAs VALUES (?, ?)", (url, tag))
 
-def parseWorked(cursor, title, url, person, job):
-    cursor.execute("INSERT INTO Worked VALUES (?, ?, ?, ?)", (title, url, person, job))
+def parseWorked(cursor, url, person, job):
+    cursor.execute("INSERT INTO Worked VALUES (?, ?, ?)", (url, person, job))
 
 def main():
     wb = openpyxl.load_workbook(sys.argv[1])
@@ -110,37 +110,34 @@ def main():
         for tag in song_tags[2:-2].split("', '"):
             parseTag(cur, tag)
 
-        if songExists(cur, song_title, song_url):
-            print(song_title)
-
-        if not songExists(cur, song_title, song_url):
+        if not songExists(cur, song_url):
             parseSong(cur, song_title, song_url, song_release_date.isoformat(), song_lyrics, song_page_views)
-            parseIsCategorizedAs(cur, song_title, song_url, category)
+            parseIsCategorizedAs(cur, song_url, category)
             for tag in song_tags[2:-2].split("', '"):
-                parseIsTaggedAs(cur, song_title, song_url, tag)
+                parseIsTaggedAs(cur, song_url, tag)
 
 
         if hasAlbum(album_track_number):
             parseAlbum(cur, album_title, album_url)
-            parseIsFeaturedIn(cur, song_title, song_url, album_title, album_url, album_track_number)
+            parseIsFeaturedIn(cur, song_url, album_url, album_track_number)
 
         for person in song_artists[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-            parseWorked(cur, song_title, song_url,  person, "Artist")
+            parseWorked(cur, song_url,  person, "Artist")
 
         for person in song_writers[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-            parseWorked(cur, song_title, song_url,  person, "Writer")
+            parseWorked(cur, song_url,  person, "Writer")
 
         for person in song_producers[2:-2].split("', '"):
             if person == "":
                 continue
             parsePerson(cur, person)
-            parseWorked(cur, song_title, song_url,  person, "Producer")
+            parseWorked(cur, song_url,  person, "Producer")
 
         dbCon.commit()
     cur.close()

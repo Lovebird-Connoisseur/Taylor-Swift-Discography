@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Albums</h1>
+<table>
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+    <th>
+      <b>Url</b>
+    </th>
+  </tr>
+
+  {% for album in albums %}
+  <tr>
+    <td>
+      {{ album.Title }}
+    </td>
+    <td>
+      {{ album.Url }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

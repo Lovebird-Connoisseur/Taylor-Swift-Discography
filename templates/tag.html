@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ tag }}</h1>
+<table>
+
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+    <th>
+      <b>Url</b>
+    </th>
+  </tr>
+    
+  {% for s in songs %}
+  <tr>
+    <td>
+      {{ s.SongTitle }}
+    </td>
+    <td>
+      {{ s.SongUrl }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

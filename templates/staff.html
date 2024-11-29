@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ staff }}</h1>
+<table>
+
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+    <th>
+      <b>Url</b>
+    </th>
+    <th>
+      <b>Role</b>
+    </th>
+  </tr>
+    
+  {% for j in jobs %}
+  <tr>
+    <td>
+      {{ j.SongTitle }}
+    </td>
+    <td>
+      {{ j.SongUrl }}
+    </td>
+    <td>
+      {{ j.JobTitle }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

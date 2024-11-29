@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Taylor Swift Discography</h1>
+
+<h2>About</h2>
+<p>This web application illustrates the use of the Taylor Swift
+database. The application is built using: 
+<a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a>,
+<a href="https://flask.palletsprojects.com">Flask</a>, and
+<a href="https://jinja.palletsprojects.com">Jinja</a>.
+</p>
+
+<h2>Entry count</h2>
+<table>
+<tr>
+  <th>Items</th>
+  <th>Count</th>
+</tr>
+<tr>
+  <td>Albums</td>
+  <td>{{ stats.Albums }}</td>
+</tr>
+<tr>
+  <td>Songs</td>
+  <td>{{ stats.Songs }}</td>
+</tr>
+<tr>
+  <td>Tags</td>
+  <td>{{ stats.Tags }}</td>
+</tr>
+<tr>
+  <td>Categories</td>
+  <td>{{ stats.Categories }}</td>
+</tr>
+<tr>
+  <td>People</td>
+  <td>{{ stats.People }}</td>
+</tr>
+<tr>
+  <td>Jobs</td>
+  <td>{{ stats.Jobs }}</td>
+</tr>
+<tr>
+  <td>IsFeaturedIn</td>
+  <td>{{ stats.nIsFeaturedIn }}</td>
+</tr>
+<tr>
+  <td>IsTaggedAs</td>
+  <td>{{ stats.nIsTaggedAs }}</td>
+</tr>
+<tr>
+  <td>IsCategorizedAs</td>
+  <td>{{ stats.nIsCategorizedAs }}</td>
+</tr>
+<tr>
+  <td>Worked</td>
+  <td>{{ stats.nWorked }}</td>
+</tr>
+</table>
+
+
+<h2>Tables</h2>
+
+<h3>Songs</h3>
+<p>
+   <a href="/songs">List all</a>
+</p>
+
+<h3>Albums</h3>
+<p>
+   <a href="/albums">List all</a>
+</p>
+
+<h3>Staff</h3>
+<p>
+   <a href="/staff">List all</a>
+</p>
+
+<h3>Tags</h3>
+<p>
+   <a href="/tags">List all</a>
+</p>
+
+<h2>Questions</h2>
+
+<ul>
+  <li><a href="/question1">Question 1</a></li>
+  <li><a href="/question2">Question 2</a></li>
+  <li><a href="/question3">Question 3</a></li>
+  <li><a href="/question4">Question 4</a></li>
+  <li><a href="/question5">Question 5</a></li>
+  <li><a href="/question6">Question 6</a></li>
+  <li><a href="/question7">Question 7</a></li>
+  <li><a href="/question8">Question 8</a></li>
+  <li><a href="/question9">Question 9</a></li>
+  <li><a href="/question10">Question 10</a></li>
+</ul>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Staff</h1>
+<table>
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+  </tr>
+
+  {% for staff in staffs %}
+  <tr>
+    <td>
+      <a href="/staff/{{ staff.Title }}">{{ staff.Title }}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

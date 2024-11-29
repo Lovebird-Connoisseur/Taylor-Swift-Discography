@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Question</h1>
+
+<p>Em que albuns se encontra uma dada música?</p>
+
+<h1>Query</h1>
+
+<p>SELECT AlbumTitle FROM IsFeaturedIn WHERE SongTitle = 'The Last Time (Ft. Gary Lightbody)';</p>
+
+<h1>Result</h1>
+
+<table>
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+    <th>
+      <b>Url</b>
+    </th>
+    <th>
+      <b>Page Views</b>
+    </th>
+    <th>
+      <b>Release Date</b>
+    </th>
+  </tr>
+
+  {% for song in songs %}
+  <tr>
+    <td>
+      {{ song.Title }}
+    </td>
+    <td>
+      {{ song.Url }}
+    </td>
+    <td>
+      {{ song.PageViews }}
+    </td>
+    <td>
+      {{ song.ReleaseDate }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

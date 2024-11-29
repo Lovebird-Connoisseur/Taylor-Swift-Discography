@@ -3,11 +3,9 @@ import db
 
 APP = Flask(__name__)
 
-#TODO: implementar as questoes (+ habilidade para pesquisar, necessário???)
-#TODO: terminar relatorio
-#TODO: implementar visualização das tabelas de ligação?
-# Website horrorose e barebones, mas eu não gosto :<
-# Haveria alguma solução mais elegante para gerar as tabelas, em vez de ter 1 template por questão? Talvez macros ajudassem aqui, se Python os tivesse.
+#
+# Pages for Individual Entries
+#
 
 @APP.route('/tags/<tagName>/')
 def get_tag(tagName):
@@ -168,8 +166,8 @@ def question4():
 
 @APP.route("/question5/")
 def question5():
-    question = "Quais músicas não pertencem a nenhum album?"
-    query = "SELECT s.Title FROM IsCategorizedAs ca JOIN Song s ON ca.songUrl = s.Url WHERE CategoryName = 'Non-Album Songs'"
+    question = "Quantas músicas não pertencem a nenhum album?"
+    query = "SELECT count(s.Url) as num FROM IsCategorizedAs ca JOIN Song s ON ca.songUrl = s.Url WHERE CategoryName = 'Non-Album Songs'"
     answers = db.execute(query).fetchall()
     return render_template('question5.html', answers=answers, question=question, query=query)
 

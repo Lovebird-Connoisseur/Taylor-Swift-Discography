@@ -2,54 +2,25 @@
 {% block content %}
 <h1>Question</h1>
 
-<p>Quais músicas foram escritas por X e produzidas por Y?</p>
+<p>{{question}}</p>
 
 <h1>Query</h1>
 
-<p>SELECT SongTitle
-FROM Worked
-WHERE StaffName = 'Liz Rose'
-AND JobTitle = 'Writer'
-
-INTERSECT
-
-SELECT SongTitle
-FROM Worked
-WHERE StaffName = 'Nathan Chapman'
-AND JobTitle = 'Producer';
-</p>
+<p>{{query}}</p>
 
 <h1>Result</h1>
 
 <table>
   <tr>
     <th>
-      <b>Title</b>
-    </th>
-    <th>
-      <b>Url</b>
-    </th>
-    <th>
-      <b>Page Views</b>
-    </th>
-    <th>
-      <b>Release Date</b>
+      <b>Song</b>
     </th>
   </tr>
 
-  {% for song in songs %}
+  {% for answer in answers %}
   <tr>
     <td>
-      {{ song.Title }}
-    </td>
-    <td>
-      {{ song.Url }}
-    </td>
-    <td>
-      {{ song.PageViews }}
-    </td>
-    <td>
-      {{ song.ReleaseDate }}
+      {{ answer.Title }}
     </td>
   </tr>
   {% endfor %}

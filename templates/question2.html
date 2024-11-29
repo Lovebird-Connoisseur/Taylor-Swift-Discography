@@ -2,11 +2,11 @@
 {% block content %}
 <h1>Question</h1>
 
-<p>Em que projetos esteve a Taylor envolvida num dado periodo?</p>
+<p>{{question}}</p>
 
 <h1>Query</h1>
 
-<p>SELECT Title FROM Song WHERE ReleaseDate >= '2007-09-01T00:00:00' AND ReleaseDate <= '2008-10-21T00:00:00';</p>
+<p>{{query}}</p>
 
 <h1>Result</h1>
 
@@ -16,29 +16,17 @@
       <b>Title</b>
     </th>
     <th>
-      <b>Url</b>
-    </th>
-    <th>
-      <b>Page Views</b>
-    </th>
-    <th>
       <b>Release Date</b>
     </th>
   </tr>
 
-  {% for song in songs %}
+  {% for answer in answers %}
   <tr>
     <td>
-      {{ song.Title }}
+      {{ answer.Title }}
     </td>
     <td>
-      {{ song.Url }}
-    </td>
-    <td>
-      {{ song.PageViews }}
-    </td>
-    <td>
-      {{ song.ReleaseDate }}
+      {{ answer.ReleaseDate }}
     </td>
   </tr>
   {% endfor %}

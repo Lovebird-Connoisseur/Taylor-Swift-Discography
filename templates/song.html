@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{songInfo.Title}}</h1>
+<p>
+  <b>Title: </b>{{ songInfo.Title }}
+</p>
+<p>
+  <b>Url: </b>{{ songInfo.Url }}
+</p>
+<p>
+  <b>Release Date: </b>{{ songInfo.ReleaseDate }}
+</p>
+<p>
+  <b>Page Views: </b>{{ songInfo.PageViews }}
+</p>
+<p>
+  <b>Tags: </b>
+  <ul>
+    {% for t in tags %}
+    <li>
+      <a href="/tags/{{ t.tagTitle }}">{{ t.tagTitle }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</p>
+
+{% endblock %}

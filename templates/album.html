@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ title.Title }}</h1>
+<table>
+
+  <tr>
+    <th>
+      <b>Title</b>
+    </th>
+    <th>
+      <b>Url</b>
+    </th>
+    <th>
+      <b>Track</b>
+    </th>
+  </tr>
+    
+  {% for s in songs %}
+  <tr>
+    <td>
+      {{ s.Title }}
+    </td>
+    <td>
+      <a href="/songs/{{ s.Url }}">{{ s.Url }}</a>
+    </td>
+    <td>
+      {{ s.Track }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

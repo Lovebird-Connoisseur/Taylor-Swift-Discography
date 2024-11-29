@@ -5,7 +5,9 @@ APP = Flask(__name__)
 
 #TODO: implementar as questoes (+ habilidade para pesquisar, necessário???)
 #TODO: terminar relatorio
-# TODO: As questões tem de ser respondidas na hora? Ou podemos só colar na página o output que obtivemos sem fazer nenhuma query?
+#TODO: implementar visualização das tabelas de ligação?
+# Website horrorose e barebones, mas eu não gosto :<
+# Haveria alguma solução mais elegante para gerar as tabelas, em vez de ter 1 template por questão? Talvez macros ajudassem aqui, se Python os tivesse.
 
 @APP.route('/tags/<tagName>/')
 def get_tag(tagName):
@@ -138,61 +140,80 @@ def list_genres():
 
 @APP.route("/question1/")
 def question1():
-    answer = db.execute("""SELECT DISTINCT StaffName FROM Worked WHERE SongTitle = 'Tell Me Why'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Quêm trabalhou numa dada música?"
+    query = """SELECT DISTINCT StaffName FROM Worked w JOIN Song s ON w.SongUrl = s.Url WHERE s.Title = 'Tell Me Why';"""
+    answers = db.execute(query).fetchall()
+    return render_template('question1.html', answers=answers, question=question, query=query)
 
 @APP.route("/question2/")
 def question2():
-    answer = db.execute("""SELECT Title FROM Song WHERE ReleaseDate >= '2007-09-01T00:00:00' AND ReleaseDate <= '2008-10-21T00:00:00'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Em que projetos esteve a Taylor envolvida num dado periodo?"
+    query = "SELECT Title, ReleaseDate FROM Song WHERE ReleaseDate >= '2007-09-01T00:00:00' AND ReleaseDate <= '2008-10-21T00:00:00' Order By ReleaseDate"
+    answers = db.execute(query).fetchall()
+    return render_template('question2.html', answers=answers, question=question, query=query)
 
 @APP.route("/question3/")
 def question3():
-    answer = db.execute("""SELECT AlbumTitle FROM IsFeaturedIn WHERE SongTitle = 'The Last Time (Ft. Gary Lightbody)'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Em que albuns se encontra uma dada música?"
+    query = "SELECT a.Title, fi.Track FROM IsFeaturedIn fi JOIN Album a ON a.Url = fi.AlbumUrl JOIN Song s ON s.Url = fi.SongUrl WHERE s.Title = 'The Last Time (Ft. Gary Lightbody)'"
+    answers = db.execute(query).fetchall()
+    return render_template('question3.html', answers=answers, question=question, query=query)
 
 @APP.route("/question4/")
 def question4():
-    answer = db.execute("""SELECT Lyrics FROM Song WHERE Title = 'End Game (Ft. Ed Sheeran & Future)'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Quais são as lyrics de uma dada música?"
+    query = "SELECT Lyrics FROM Song WHERE Title = 'End Game (Ft. Ed Sheeran & Future)'"
+    answers = db.execute(query).fetchall()
+    return render_template('question4.html', answers=answers, question=question, query=query)
 
 @APP.route("/question5/")
 def question5():
-    answer = db.execute("""SELECT SongTitle FROM IsCategorizedAs WHERE CategoryName = 'Non-Album Songs'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Quais músicas não pertencem a nenhum album?"
+    query = "SELECT s.Title FROM IsCategorizedAs ca JOIN Song s ON ca.songUrl = s.Url WHERE CategoryName = 'Non-Album Songs'"
+    answers = db.execute(query).fetchall()
+    return render_template('question5.html', answers=answers, question=question, query=query)
 
 @APP.route("/question6/")
 def question6():
-    answer = db.execute("""SELECT SongTitle FROM IsCategorizedAs WHERE CategoryName = 'Other Artist Songs'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Quais músicas foram feitas em colaboração com a Taylor Swift?"
+    query = "SELECT s.Title FROM IsCategorizedAs ca JOIN Song s ON ca.songUrl = s.Url WHERE CategoryName = 'Other Artist Songs'"
+    answers = db.execute(query).fetchall()
+    return render_template('question6.html', answers=answers, question=question, query=query)
 
 @APP.route("/question7/")
 def question7():
-    answer = db.execute("""SELECT Title FROM Song ORDER BY pageViews DESC LIMIT 5;""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Quais são as 5 músicas cujas páginas tem o maior número de visualizações?"
+    query = "SELECT Title, pageViews FROM Song ORDER BY pageViews DESC LIMIT 5"
+    answers = db.execute(query).fetchall()
+    return render_template('question7.html', answers=answers, question=question, query=query)
 
 @APP.route("/question8/")
 def question8():
-    answer = db.execute("""SELECT SongTitle
-    FROM Worked
+    question = "Quais músicas foram escritas por X e produzidas por Y?"
+    query = """SELECT s.Title
+    FROM Worked w JOIN Song s ON s.Url = w.SongUrl
     WHERE StaffName = 'Liz Rose'
     AND JobTitle = 'Writer'
 
     INTERSECT
 
-    SELECT SongTitle
-    FROM Worked
+    SELECT s.Title
+    FROM Worked w JOIN Song s ON s.Url = w.SongUrl
     WHERE StaffName = 'Nathan Chapman'
-    AND JobTitle = 'Producer'
-    """).fetchall()
-    return render_template('tag-list.html', tags=tags)
+    AND JobTitle = 'Producer'"""
+    answers = db.execute(query).fetchall()
+    return render_template('question8.html', answers=answers, question=question, query=query)
 
 @APP.route("/question9/")
 def question9():
-    answer = db.execute("""SELECT Title FROM Song WHERE Lyrics like '%like a violin%'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Qual é aquela música que vai: blah blah blah?"
+    query = "SELECT Title FROM Song WHERE Lyrics like '%like a violin%'"
+    answers = db.execute(query).fetchall()
+    return render_template('question9.html', answers=answers, question=question, query=query)
 
 @APP.route("/question10/")
 def question10():
-    answer = db.execute("""SELECT SongTitle FROM Worked WHERE JobTitle = 'Producer' AND StaffName = 'Jack Antonoff'""").fetchall()
-    return render_template('tag-list.html', tags=tags)
+    question = "Que músicas foram produzidas por uma dada pessoa?"
+    query = "SELECT s.Title FROM Worked w JOIN Song s ON s.Url = w.SongUrl WHERE JobTitle = 'Producer' AND StaffName = 'Jack Antonoff'"
+    answers = db.execute(query).fetchall()
+    return render_template('question10.html', answers=answers, question=question, query=query)

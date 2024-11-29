@@ -18,10 +18,10 @@
   {% for j in jobs %}
   <tr>
     <td>
-      {{ j.SongTitle }}
+      {{ j.Title }}
     </td>
     <td>
-      {{ j.SongUrl }}
+      <a href="/songs/{{ j.Url }}">{{ j.Url }}</a>
     </td>
     <td>
       {{ j.JobTitle }}

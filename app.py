@@ -3,28 +3,60 @@ import db
 
 APP = Flask(__name__)
 
-#TODO: implementar as questoes (+ habilidade para pesquisar)
+#TODO: implementar as questoes (+ habilidade para pesquisar, necessário???)
 #TODO: terminar relatorio
-# TODO: Create individual album and song pages (plus link to them!!!)
-# TODO: Redezenhar a BD de forma a remover o Title como PK dos albums e dos Songs (pedir opinião do outro prof)
 # TODO: As questões tem de ser respondidas na hora? Ou podemos só colar na página o output que obtivemos sem fazer nenhuma query?
-# TODO: É necessário adicionar a capacidade de pesquisa para as questões?
+# TODO: O dataset n ão contém todas as músicas dos albums, por isso a página de um abum pode só ter 1 música com track number 20 :<
 
 @APP.route('/tags/<tagName>/')
 def get_tag(tagName):
     songs = db.execute('''
-    Select SongTitle, SongUrl
-    From IsTaggedAs
+    Select s.Title, s.Url
+    From IsTaggedAs ta
+    Join Song s On s.Url = ta.SongUrl
     Where tagTitle = ?''', [tagName]).fetchall()
     return render_template('tag.html', tag=tagName, songs=songs)
 
 @APP.route('/staff/<staffName>/')
 def get_staff(staffName):
     jobs = db.execute('''
-    Select SongTitle, SongUrl, JobTitle
-    From Worked
+    Select s.Title, s.Url, JobTitle
+    From Worked w
+    Join Song s On s.Url = w.SongUrl
     Where StaffName = ?''', [staffName]).fetchall()
     return render_template('staff.html', staff=staffName, jobs=jobs)
+
+@APP.route('/albums/<path:albumUrl>/')
+def get_album(albumUrl):
+    songs = db.execute('''
+    Select s.Title, s.Url, fi.Track
+    From Song s
+    Join IsFeaturedIn fi On fi.SongUrl = s.Url
+    Join Album a On a.Url = fi.AlbumUrl
+    Where a.Url = ?
+    Order By fi.Track ASC''', [albumUrl]).fetchall()
+
+    title = db.execute('''
+    Select Title
+    From Album
+    Where Url = ?''', [albumUrl]).fetchone()
+    
+    return render_template('album.html', songs=songs, title=title)
+
+@APP.route('/songs/<path:songUrl>/')
+def get_song(songUrl):
+    songInfo = db.execute('''
+    Select Title, Url, ReleaseDate, PageViews
+    From Song
+    Where Url = ?''', [songUrl]).fetchone()
+
+    tags = db.execute('''
+    Select tagTitle
+    From IsTaggedAs ta
+    Join Song s On s.Url = ta.SongUrl
+    Where ta.SongUrl = ?''', [songUrl]).fetchall()
+    
+    return render_template('song.html', songInfo=songInfo, tags=tags)
 
 #
 # ENTRY COUNTER

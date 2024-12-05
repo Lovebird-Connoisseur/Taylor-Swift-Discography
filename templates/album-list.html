@@ -14,10 +14,10 @@
   {% for album in albums %}
   <tr>
     <td>
-      {{ album.Title }}
+      <a href="/albums/{{ album.Url }}">{{ album.Title }}</a>
     </td>
     <td>
-      <a href="/albums/{{ album.Url }}">{{ album.Url }}</a>
+      <a href="{{ album.Url }}">{{ album.Url }}</a>
     </td>
   </tr>
   {% endfor %}

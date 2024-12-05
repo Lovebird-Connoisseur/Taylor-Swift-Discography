@@ -20,10 +20,10 @@
   {% for song in songs %}
   <tr>
     <td>
-      {{ song.Title }}
+      <a href="/songs/{{ song.Url }}">{{ song.Title }}</a>
     </td>
     <td>
-      <a href="/songs/{{ song.Url }}">{{ song.Url }}</a>
+      <a href="{{ song.Url }}">{{ song.Url }}</a>
     </td>
     <td>
       {{ song.PageViews }}

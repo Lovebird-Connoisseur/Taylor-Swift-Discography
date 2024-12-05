@@ -18,10 +18,10 @@
   {% for s in songs %}
   <tr>
     <td>
-      {{ s.Title }}
+      <a href="/songs/{{ s.Url }}">{{ s.Title }}</a>
     </td>
     <td>
-      <a href="/songs/{{ s.Url }}">{{ s.Url }}</a>
+      <a href="{{ s.Url }}">{{ s.Url }}</a>
     </td>
     <td>
       {{ s.Track }}

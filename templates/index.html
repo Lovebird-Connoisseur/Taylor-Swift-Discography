@@ -66,6 +66,13 @@ database. The application is built using:
    <a href="/songs">List all</a>
 </p>
 
+<p>Search by title:
+<form name="msearch" action="javascript:window.open('/songs/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+  <input name="expr" id="expr" value="title" required/>
+  <input type="submit" value="search"/>
+</form>
+</p>
+
 <h3>Albums</h3>
 <p>
    <a href="/albums">List all</a>

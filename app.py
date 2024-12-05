@@ -133,6 +133,23 @@ def list_genres():
     return render_template('tag-list.html', tags=tags)
 
 #
+# SEARCH
+#
+
+@APP.route('/songs/search/<expr>/')
+def search_song(expr):
+  search = { 'expr': expr }
+  expr = '%' + expr + '%'
+  result = db.execute(
+      ''' 
+      SELECT Title, Url
+      FROM Song
+      WHERE Title LIKE ?
+      ''', [expr]).fetchall()
+  return render_template('song-search.html',
+                         search=search,songs=result)
+
+#
 # QUESTIONS
 #
 

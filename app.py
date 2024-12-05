@@ -204,8 +204,8 @@ def question8():
 
 @APP.route("/question9/")
 def question9():
-    question = "Qual é aquela música que vai: blah blah blah?"
-    query = "SELECT Title FROM Song WHERE Lyrics like '%like a violin%'"
+    question = "Qual é o número médio de tags por música?"
+    query = "SELECT ROUND(AVG(média)) as Média FROM (SELECT COUNT(ta.TagTitle) as média FROM Song s Join IsTaggedAs ta On ta.SongUrl = s.Url Join Tag t On t.Title = ta.TagTitle GROUP BY s.Url)"
     answers = db.execute(query).fetchall()
     return render_template('question9.html', answers=answers, question=question, query=query)
 
